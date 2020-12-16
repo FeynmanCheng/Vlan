@@ -6,35 +6,62 @@ class Telnet:
   test_user = "hadoop"
   test_passwd = "0"
 
-  HOST = "172.19.241.171"
-  
+  T = "172.19.241.171"  
   R = ''
   S1 = ''
   S2 = ''
   S3 = ''
 
-  tn = None
+  hosts = [T,R,S1,S2,S3]
+
+  ip_tn_dict = {}
 
   def __init__(self) -> None:
       super().__init__()
-      # self.tn = self.login(self.HOST, self.test_user, self.test_passwd)
 
-  def get_tn(self):
-    return self.tn
+  def get_tn(self,ip):
+    return self.ip_tn_dict[ip]   
 
   def login(self,ip, user, passwd):
-    self.tn = telnetlib.Telnet(self.HOST)
+    
 
-    self.tn.read_until(b"login: ")
-    self.tn.write(user.encode('ascii') + b"\n")
+    if ip == 'T':
+        ip = '172.19.241.171'
+
+    if ip in self.ip_tn_dict.keys():
+      self.logout(ip)
+      self.ip_tn_dict.pop(ip)
+
+    tn = telnetlib.Telnet(self.T)
+
+    tn.read_until(b"login: ")
+    tn.write(user.encode('ascii') + b"\n")
     if passwd:
-        self.tn.read_until(b"Password: ")
-        self.tn.write(passwd.encode('ascii') + b"\n")
-        
-    return self.tn
+        tn.read_until(b"Password: ")
+        tn.write(passwd.encode('ascii') + b"\n")
+        if ip not in self.ip_tn_dict.keys():
+          self.ip_tn_dict[ip] = tn
+          print(self.ip_tn_dict)
+  
+    return tn.read_until(b'hadoop@Slave2:~$',1).decode('ascii')
 
-  def get_connection(self):
-    tn = self.login(1,"hadoop",'0')
+  def logout(self,ip):
+
+    tn = self.get_tn(ip)
+    tn.write(b'exit\n')
+    return tn.read_all().decode('ascii')
+
+  def run_cmd(self,ip,cmd):
+    cmd += '\n'
+    tn = self.get_tn(ip)
+    tn.write(cmd.encode('utf-8'))
+    return tn.read_until(b'hadoop@Slave2:~$',1).decode('ascii')
+
+
+  def test(self):
+    msg = self.login(self.T,self.test_user,self.test_passwd)
+    print(msg)
+    tn = self.get_tn(self.T)
     print(tn.read_until(b'hadoop@Slave2:~$',1).decode('ascii'),end=' ')
 
     
@@ -45,8 +72,10 @@ class Telnet:
       print(tn.read_until(b'hadoop@Slave2:~$',1).decode('ascii'),end=' ')
 
       if cmd == 'exit':
+        self.logout(self.T)
         break
+
 
 if __name__ == "__main__":
     TN = Telnet()
-    TN.get_connection()
+    TN.test()

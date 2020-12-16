@@ -1,7 +1,10 @@
 from flask import Flask
 from flask.globals import request
+from flask.wrappers import Response
 from telnet import Telnet
+from flask_cors import CORS
 app = Flask(__name__)
+CORS(app)
 
 TN = Telnet()
 
@@ -13,15 +16,25 @@ def hello_world():
 def login(ip):
     user = request.args.get('user')
     passwd = request.args.get('passwd')
-    
-    tn = TN.login(ip,user,passwd)
-    
-    return tn.read_until(b'hadoop@Slave2:~$',1).decode('ascii')
 
-@app.route('/command/<string:cmd>')
-def send_command(cmd):
-    cmd += '\n'
-    tn = TN.get_tn()
-    tn.write(cmd.encode('utf-8'))
-    return tn.read_until(b'hadoop@Slave2:~$',1).decode('ascii')
+    return TN.login(ip,user,passwd)
 
+@app.route('/command/<string:ip>',methods=['POST'])
+def send_command(ip):
+
+    try:
+        cmd = request.get_json()['cmd']
+
+        if ip == 'T':
+            ip = '172.19.241.171'
+        
+        msg = TN.run_cmd(ip,cmd)
+        return msg
+
+    except Exception:
+        return {'data': None},400
+
+
+@app.route('/logout/<string:ip>')
+def logout(ip):
+    return TN.logout(ip)
