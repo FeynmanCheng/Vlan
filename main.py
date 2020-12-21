@@ -10,12 +10,9 @@ TN = Telnet()
 def hello_world():
     return 'Hello, World!'
 
-@app.route('/login/<string:ip>')
-def login(ip):
-    user = request.args.get('user')
-    passwd = request.args.get('passwd')
-
-    return TN.login(ip,user,passwd)
+@app.route('/login/<string:hostname>')
+def login(hostname):
+    return TN.login_no_passwd(hostname)
 
 @app.route('/command/<string:ip>',methods=['POST'])
 def send_command(ip):
