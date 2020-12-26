@@ -221,8 +221,6 @@ class Telnet:
       'en',
       'cisco',
       'conf t',
-      # 'interface f0/0 ',
-      # 'no shutdown',
       'interface f0/0.1',
       'encapsulation dot1q 10',
       'ip address 192.168.1.254 255.255.255.0',
