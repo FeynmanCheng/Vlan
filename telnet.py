@@ -79,7 +79,7 @@ class Telnet:
   def logout(self,ip):
 
     tn = self.get_tn(ip)
-    tn.write(b'exit\n')
+    tn.close()
     return tn.read_all().decode('ascii')
 
   def run_cmd(self,hostname,cmd):
