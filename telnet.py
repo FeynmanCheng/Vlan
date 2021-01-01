@@ -18,8 +18,6 @@ class Telnet:
 
   host_ip_dict = {'T':T,'R':R,'S1':S1,'S2':S2,'S3':S3}
 
-  hosts = [T,R,S1,S2,S3]
-
   ip_tn_dict = {}
 
   def __init__(self) -> None:
@@ -124,9 +122,6 @@ class Telnet:
         self.logout(self.T)
         break
 
-  def enable(self, ip):
-    self.run_cmd(ip, 'en')
-    self.run_cmd(ip, self.passwd)
 
   def get_ip_by_hostname(self, hostname):
     return self.host_ip_dict[hostname]
