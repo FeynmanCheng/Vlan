@@ -141,97 +141,41 @@ class Telnet:
       return 'Wrong Hostname',-1
 
   def config_S1(self):
-    commands = [
-      'en',
-      'cisco',
-      'conf t',
-      'vtp domain abc',
-      'vtp mode server',
-      'vlan 10',
-      'vlan 20',
-      'vlan 30',
-      'interface range f0/1-4',
-      'switch trunk encapsulation dot1q',
-      'switchport mode trunk',
-      'exit',
-      'exit'
-    ]
+    commands = []
+    with open('./scripts/S1.txt') as f:
+      commands = f.readlines()
+      commands = [i.split('\n')[0] for i in commands]
 
     return self.run_cmds('S1', commands)
     
 
   def config_S2(self):
-    commands = [
-      'en',
-      'cisco',
-      'conf t',
-      'vtp mode client',
-      'interface f0/1 ',
-      'switch switchport mode access',
-      'switchport access vlan 10',
-      'interface f0/2',
-      'switchport mode access',
-      'switchport access vlan 20',
-      'interface f0/3',
-      'switchport mode access',
-      'switchport access vlan 30',
-      'interface f0/4',
-      'switch trunk encapsulation dot1q',
-      'switchport mode trunk',
-      'exit',
-      'exit'
-    ]
+    commands = []
+    with open('./scripts/S2.txt') as f:
+      commands = f.readlines()
+      commands = [i.split('\n')[0] for i in commands]
 
     return self.run_cmds('S2', commands)
 
   
   def config_S3(self):
-    commands = [
-      'en',
-      'cisco',
-      'conf t',
-      'vtp mode client',
-      'interface f0/1 ',
-      'switch switchport mode access',
-      'switchport access vlan 10',
-      'interface f0/2',
-      'switchport mode access',
-      'switchport access vlan 20',
-      'interface f0/3',
-      'switchport mode access',
-      'switchport access vlan 30',
-      'interface f0/4',
-      'switch trunk encapsulation dot1q',
-      'switchport mode trunk',
-      'exit',
-      'exit'
-    ]
+    commands = []
+    with open('./scripts/S3.txt') as f:
+      commands = f.readlines()
+      commands = [i.split('\n')[0] for i in commands]
 
     return self.run_cmds('S3', commands)
 
   def config_R(self):
-    self.login_no_passwd('R')
-
-    commands = [
-      'en',
-      'cisco',
-      'conf t',
-      'interface f0/0.1',
-      'encapsulation dot1q 10',
-      'ip address 192.168.1.254 255.255.255.0',
-      'interface f0/0.2',
-      'encapsulation dot1q 20',
-      'ip address 192.168.2.254 255.255.255.0',
-      'interface f0/0.3',
-      'encapsulation dot1q 30',
-      'ip address 192.168.3.254 255.255.255.0',
-      'exit',
-      'exit'
-    ]
+    commands = []
+    with open('./scripts/R.txt') as f:
+      commands = f.readlines()
+      commands = [i.split('\n')[0] for i in commands]
 
     return self.run_cmds('R', commands)
   
   
+  # Test
   def config_T(self):
     self.login_no_passwd('T')
 
